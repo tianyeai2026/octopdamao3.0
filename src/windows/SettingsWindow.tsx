@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import BackgroundPicker from "../components/BackgroundPicker";
 import ShortcutRecorder from "../components/ShortcutRecorder";
 import WindowCloseButton from "../components/WindowCloseButton";
 import {
@@ -15,7 +16,7 @@ import { version as appVersion } from "../../package.json";
 import { login } from "../lib/octopHttp";
 import { tauriApi } from "../lib/tauriApi";
 import { hideCurrentWindow } from "../lib/tauriWindowApi";
-import type { AppConfig, MascotId } from "../lib/types";
+import type { AppConfig, BackgroundId, MascotId } from "../lib/types";
 
 type Notice = { kind: "success" | "error"; text: string } | null;
 type SettingsTab = "general" | "window" | "hotkeys" | "about";
@@ -49,6 +50,7 @@ export default function SettingsWindow({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [mascotId, setMascotId] = useState<MascotId>("peek");
+  const [chatBackground, setChatBackground] = useState<BackgroundId>("default");
   const [shortcutOpenPet, setShortcutOpenPet] = useState(
     DEFAULT_APP_CONFIG.shortcutOpenPet,
   );
@@ -76,6 +78,7 @@ export default function SettingsWindow({
         setBaseUrl(loadedConfig.baseUrl);
         setUsername(loadedConfig.username);
         setMascotId(loadedConfig.mascotId);
+        setChatBackground(loadedConfig.chatBackground || "default");
         setShortcutOpenPet(
           loadedConfig.shortcutOpenPet || DEFAULT_APP_CONFIG.shortcutOpenPet,
         );
@@ -138,6 +141,21 @@ export default function SettingsWindow({
       setNotice({
         kind: "error",
         text: `切换形象失败：${errorMessage(error)}`,
+      });
+    }
+  }
+
+  async function chooseBackground(next: BackgroundId) {
+    setChatBackground(next);
+    try {
+      await tauriApi.patchConfig({ chatBackground: next });
+      setConfig((current) =>
+        current ? { ...current, chatBackground: next } : current,
+      );
+    } catch (error) {
+      setNotice({
+        kind: "error",
+        text: `切换背景失败：${errorMessage(error)}`,
       });
     }
   }
@@ -360,6 +378,15 @@ export default function SettingsWindow({
                   );
                 })}
               </div>
+            </div>
+
+            <div className="settings-subgroup">
+              <div className="settings-subgroup-title">聊天背景</div>
+              <BackgroundPicker
+                variant="inline"
+                value={chatBackground}
+                onChange={(id) => void chooseBackground(id)}
+              />
             </div>
 
             <div className="settings-footer">

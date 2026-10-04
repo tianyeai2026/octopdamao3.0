@@ -1,3 +1,6 @@
+import { useState } from "react";
+
+import BackgroundPicker from "../components/BackgroundPicker";
 import Composer from "../components/Composer";
 import ChatChrome from "../components/ChatChrome";
 import ChatResizeChrome from "../components/ChatResizeChrome";
@@ -5,24 +8,36 @@ import MessageList from "../components/MessageList";
 import QueuedMessages from "../components/QueuedMessages";
 import { useChatController } from "../hooks/useChatController";
 import { useEscapeHidesWindow } from "../hooks/useWindowChrome";
+import { BACKGROUND_SRC } from "../lib/configLogic";
 import { removeChatItem } from "../lib/messageQueue";
 import SettingsWindow from "./SettingsWindow";
 
 export default function ChatWindow() {
   const chat = useChatController();
   useEscapeHidesWindow();
+  const [showBgPicker, setShowBgPicker] = useState(false);
 
   if (chat.needsSettings) {
     return <SettingsWindow onSaved={() => chat.retryInitialize()} />;
   }
+
+  const bgSrc = BACKGROUND_SRC[chat.chatBackground];
 
   return (
     <main
       className={`chat-window${chat.layoutExpanded ? " is-expanded" : " is-compact"}`}
       ref={chat.rootRef}
     >
+      {bgSrc ? (
+        <div
+          className="chat-bg-layer"
+          aria-hidden="true"
+          style={{ backgroundImage: `url(${bgSrc})` }}
+        />
+      ) : null}
       <ChatChrome
         onNewSession={() => void chat.startNewSession()}
+        onPickBackground={() => setShowBgPicker(true)}
         newSessionDisabled={
           chat.loadingHistory || chat.connection === "streaming"
         }
@@ -84,6 +99,14 @@ export default function ChatWindow() {
         <div className="chat-toast" role="status">
           {chat.ttsNotice}
         </div>
+      ) : null}
+      {showBgPicker ? (
+        <BackgroundPicker
+          variant="sheet"
+          value={chat.chatBackground}
+          onChange={(id) => void chat.changeBackground(id)}
+          onClose={() => setShowBgPicker(false)}
+        />
       ) : null}
     </main>
   );

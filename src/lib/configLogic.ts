@@ -1,9 +1,10 @@
-import type { AppConfig, MascotId } from "./types";
+import type { AppConfig, BackgroundId, MascotId } from "./types";
 
 export const DEFAULT_APP_CONFIG: AppConfig = {
   baseUrl: "",
   username: "",
   mascotId: "peek",
+  chatBackground: "default",
   lastAgentId: null,
   threadIdByAgent: {},
   petX: null,
@@ -18,6 +19,26 @@ export const MASCOT_SRC: Record<MascotId, string> = {
   peek: "/mascots/peek.webp",
   type: "/mascots/type.webp",
 };
+
+export const BACKGROUND_OPTIONS: Array<{
+  id: BackgroundId;
+  label: string;
+  src?: string;
+}> = [
+  { id: "default", label: "默认深色" },
+  { id: "sky", label: "蓝天白云", src: "/backgrounds/sky.webp" },
+  { id: "soda", label: "气泡水", src: "/backgrounds/soda.webp" },
+  { id: "doll", label: "娃娃与饮料", src: "/backgrounds/doll.webp" },
+  { id: "mint", label: "薄荷奶昔", src: "/backgrounds/mint.webp" },
+];
+
+export const BACKGROUND_SRC: Partial<Record<BackgroundId, string>> =
+  Object.fromEntries(
+    BACKGROUND_OPTIONS.filter((option) => option.src).map((option) => [
+      option.id,
+      option.src,
+    ]),
+  );
 
 export function normalizeBaseUrl(raw: string): string {
   const trimmed = raw.trim().replace(/\/+$/, "");

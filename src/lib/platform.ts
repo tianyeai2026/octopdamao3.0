@@ -2,6 +2,10 @@ export function isMacPlatform(platform = navigator.platform): boolean {
   return /mac|iphone|ipad|ipod/i.test(platform);
 }
 
+export function isMobileDevice(userAgent = navigator.userAgent): boolean {
+  return /Android|iPhone|iPad|iPod/i.test(userAgent);
+}
+
 export type WindowCloseSide = "start" | "end";
 
 /** macOS: traffic-light close on the left. Windows/Linux: × on the right. */

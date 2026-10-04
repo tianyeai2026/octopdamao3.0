@@ -60,7 +60,12 @@ import {
   setCurrentWindowMinSize,
   setCurrentWindowResizable,
 } from "../lib/tauriWindowApi";
-import type { AgentSummary, AppConfig, ChatMessage } from "../lib/types";
+import type {
+  AgentSummary,
+  AppConfig,
+  BackgroundId,
+  ChatMessage,
+} from "../lib/types";
 
 declare global {
   interface Window {
@@ -88,6 +93,7 @@ export function useChatController() {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [needsSettings, setNeedsSettings] = useState(false);
   const [error, setError] = useState("");
+  const [chatBackground, setChatBackground] = useState<BackgroundId>("default");
   const rootRef = useRef<HTMLElement | null>(null);
   const wasExpandedRef = useRef(false);
   const lastCompactHeightRef = useRef(0);
@@ -352,6 +358,7 @@ export function useChatController() {
       ]);
       if (sequence !== loadSequenceRef.current || !mountedRef.current) return;
       configRef.current = config;
+      setChatBackground(config.chatBackground || "default");
 
       let token = storedToken;
       if (!token) {
@@ -833,8 +840,22 @@ export function useChatController() {
       ? formatStreamStatusLabel(streamStatus, statusNow)
       : null;
 
+  async function changeBackground(next: BackgroundId) {
+    setChatBackground(next);
+    const current = configRef.current;
+    if (!current) return;
+    configRef.current = { ...current, chatBackground: next };
+    try {
+      await tauriApi.patchConfig({ chatBackground: next });
+    } catch {
+      // 背景已在本地即时生效；持久化失败不打断使用
+    }
+  }
+
   return {
     rootRef,
+    chatBackground,
+    changeBackground,
     needsSettings,
     expanded,
     layoutExpanded,
