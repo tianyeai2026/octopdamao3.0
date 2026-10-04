@@ -9,6 +9,7 @@ import {
 } from "../hooks/useWindowChrome";
 import {
   DEFAULT_APP_CONFIG,
+  FONT_SCALE_OPTIONS,
   MASCOT_SRC,
   normalizeBaseUrl,
 } from "../lib/configLogic";
@@ -16,7 +17,12 @@ import { version as appVersion } from "../../package.json";
 import { login } from "../lib/octopHttp";
 import { tauriApi } from "../lib/tauriApi";
 import { hideCurrentWindow } from "../lib/tauriWindowApi";
-import type { AppConfig, BackgroundId, MascotId } from "../lib/types";
+import type {
+  AppConfig,
+  BackgroundId,
+  FontScale,
+  MascotId,
+} from "../lib/types";
 
 type Notice = { kind: "success" | "error"; text: string } | null;
 type SettingsTab = "general" | "window" | "hotkeys" | "about";
@@ -51,6 +57,7 @@ export default function SettingsWindow({
   const [password, setPassword] = useState("");
   const [mascotId, setMascotId] = useState<MascotId>("peek");
   const [chatBackground, setChatBackground] = useState<BackgroundId>("default");
+  const [fontScale, setFontScale] = useState<FontScale>("medium");
   const [shortcutOpenPet, setShortcutOpenPet] = useState(
     DEFAULT_APP_CONFIG.shortcutOpenPet,
   );
@@ -79,6 +86,7 @@ export default function SettingsWindow({
         setUsername(loadedConfig.username);
         setMascotId(loadedConfig.mascotId);
         setChatBackground(loadedConfig.chatBackground || "default");
+        setFontScale(loadedConfig.fontScale || "medium");
         setShortcutOpenPet(
           loadedConfig.shortcutOpenPet || DEFAULT_APP_CONFIG.shortcutOpenPet,
         );
@@ -156,6 +164,21 @@ export default function SettingsWindow({
       setNotice({
         kind: "error",
         text: `切换背景失败：${errorMessage(error)}`,
+      });
+    }
+  }
+
+  async function chooseFontScale(next: FontScale) {
+    setFontScale(next);
+    try {
+      await tauriApi.patchConfig({ fontScale: next });
+      setConfig((current) =>
+        current ? { ...current, fontScale: next } : current,
+      );
+    } catch (error) {
+      setNotice({
+        kind: "error",
+        text: `调整字体失败：${errorMessage(error)}`,
       });
     }
   }
@@ -387,6 +410,26 @@ export default function SettingsWindow({
                 value={chatBackground}
                 onChange={(id) => void chooseBackground(id)}
               />
+            </div>
+
+            <div className="settings-subgroup">
+              <div className="settings-subgroup-title">字体大小</div>
+              <div className="font-scale-row" role="group" aria-label="字体大小">
+                {FONT_SCALE_OPTIONS.map((option) => {
+                  const selected = option.id === fontScale;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      className={`font-scale-btn${selected ? " is-selected" : ""}`}
+                      aria-pressed={selected}
+                      onClick={() => void chooseFontScale(option.id)}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="settings-footer">

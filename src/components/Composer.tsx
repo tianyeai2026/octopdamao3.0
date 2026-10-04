@@ -9,6 +9,7 @@ import type {
   ResolvedModel,
 } from "../lib/octopTypes";
 import { modelOptionLabel, modelOptionValue } from "../lib/octopTypes";
+import { isMobile } from "../lib/tauriApi";
 import type { AgentSummary } from "../lib/types";
 
 export type ComposerSendOptions = {
@@ -263,6 +264,7 @@ export default function Composer({
           <input
             ref={fileRef}
             type="file"
+            accept={isMobile ? "image/*" : undefined}
             multiple
             hidden
             onChange={(event) => {

@@ -30,6 +30,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("../lib/tauriApi", () => ({
+  isMobile: false,
   tauriApi: {
     loadConfig: mocks.loadConfig,
     patchConfig: mocks.patchConfig,

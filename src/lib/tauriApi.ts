@@ -3,7 +3,7 @@ import { emit, listen } from "@tauri-apps/api/event";
 
 import type { AppConfig, MascotId } from "./types";
 
-const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+export const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 // Native window/tray commands are desktop-only and are not registered on
 // mobile. On mobile they resolve to a no-op.

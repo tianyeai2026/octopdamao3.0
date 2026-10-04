@@ -2,11 +2,14 @@ export type MascotId = "peek" | "type";
 
 export type BackgroundId = "default" | "sky" | "soda" | "doll" | "mint";
 
+export type FontScale = "small" | "medium" | "large" | "xlarge";
+
 export interface AppConfig {
   baseUrl: string;
   username: string;
   mascotId: MascotId;
   chatBackground: BackgroundId;
+  fontScale: FontScale;
   lastAgentId: string | null;
   threadIdByAgent: Record<string, string>;
   petX: number | null;

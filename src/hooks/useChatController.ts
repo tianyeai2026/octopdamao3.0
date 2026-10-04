@@ -65,6 +65,7 @@ import type {
   AppConfig,
   BackgroundId,
   ChatMessage,
+  FontScale,
 } from "../lib/types";
 
 declare global {
@@ -94,6 +95,7 @@ export function useChatController() {
   const [needsSettings, setNeedsSettings] = useState(false);
   const [error, setError] = useState("");
   const [chatBackground, setChatBackground] = useState<BackgroundId>("default");
+  const [fontScale, setFontScale] = useState<FontScale>("medium");
   const rootRef = useRef<HTMLElement | null>(null);
   const wasExpandedRef = useRef(false);
   const lastCompactHeightRef = useRef(0);
@@ -359,6 +361,7 @@ export function useChatController() {
       if (sequence !== loadSequenceRef.current || !mountedRef.current) return;
       configRef.current = config;
       setChatBackground(config.chatBackground || "default");
+      setFontScale(config.fontScale || "medium");
 
       let token = storedToken;
       if (!token) {
@@ -852,10 +855,24 @@ export function useChatController() {
     }
   }
 
+  async function changeFontScale(next: FontScale) {
+    setFontScale(next);
+    const current = configRef.current;
+    if (!current) return;
+    configRef.current = { ...current, fontScale: next };
+    try {
+      await tauriApi.patchConfig({ fontScale: next });
+    } catch {
+      // 字体已在本地即时生效；持久化失败不打断使用
+    }
+  }
+
   return {
     rootRef,
     chatBackground,
+    fontScale,
     changeBackground,
+    changeFontScale,
     needsSettings,
     expanded,
     layoutExpanded,

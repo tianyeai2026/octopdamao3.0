@@ -14,6 +14,8 @@ pub struct AppConfig {
     pub base_url: String,
     pub username: String,
     pub mascot_id: String,
+    pub chat_background: String,
+    pub font_scale: String,
     pub last_agent_id: Option<String>,
     pub thread_id_by_agent: HashMap<String, String>,
     pub pet_x: Option<f64>,
@@ -30,6 +32,8 @@ impl Default for AppConfig {
             base_url: String::new(),
             username: String::new(),
             mascot_id: "peek".into(),
+            chat_background: "default".into(),
+            font_scale: "medium".into(),
             last_agent_id: None,
             thread_id_by_agent: HashMap::new(),
             pet_x: None,
@@ -93,6 +97,8 @@ fn merge_patch(cfg: &mut AppConfig, patch: Value) -> Result<(), String> {
             "baseUrl" => cfg.base_url = patch_field(key, value.clone())?,
             "username" => cfg.username = patch_field(key, value.clone())?,
             "mascotId" => cfg.mascot_id = patch_field(key, value.clone())?,
+            "chatBackground" => cfg.chat_background = patch_field(key, value.clone())?,
+            "fontScale" => cfg.font_scale = patch_field(key, value.clone())?,
             "lastAgentId" => cfg.last_agent_id = patch_field(key, value.clone())?,
             "threadIdByAgent" => {
                 cfg.thread_id_by_agent = patch_field(key, value.clone())?;

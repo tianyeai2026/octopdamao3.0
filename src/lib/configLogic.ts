@@ -1,10 +1,16 @@
-import type { AppConfig, BackgroundId, MascotId } from "./types";
+import type {
+  AppConfig,
+  BackgroundId,
+  FontScale,
+  MascotId,
+} from "./types";
 
 export const DEFAULT_APP_CONFIG: AppConfig = {
   baseUrl: "",
   username: "",
   mascotId: "peek",
   chatBackground: "default",
+  fontScale: "medium",
   lastAgentId: null,
   threadIdByAgent: {},
   petX: null,
@@ -39,6 +45,21 @@ export const BACKGROUND_SRC: Partial<Record<BackgroundId, string>> =
       option.src,
     ]),
   );
+
+export const FONT_SCALE_OPTIONS: Array<{
+  id: FontScale;
+  label: string;
+  scale: number;
+}> = [
+  { id: "small", label: "小", scale: 0.9 },
+  { id: "medium", label: "标准", scale: 1.0 },
+  { id: "large", label: "大", scale: 1.16 },
+  { id: "xlarge", label: "特大", scale: 1.32 },
+];
+
+export function fontScaleValue(id: FontScale | undefined): number {
+  return FONT_SCALE_OPTIONS.find((option) => option.id === id)?.scale ?? 1;
+}
 
 export function normalizeBaseUrl(raw: string): string {
   const trimmed = raw.trim().replace(/\/+$/, "");

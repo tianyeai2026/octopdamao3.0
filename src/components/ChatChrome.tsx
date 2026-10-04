@@ -1,3 +1,5 @@
+import { Type as TypeIcon } from "lucide-react";
+
 import { isMobileDevice, windowCloseSide } from "../lib/platform";
 
 import WindowCloseButton from "./WindowCloseButton";
@@ -6,10 +8,12 @@ export default function ChatChrome({
   onNewSession,
   newSessionDisabled,
   onPickBackground,
+  onFontSize,
 }: {
   onNewSession?: () => void;
   newSessionDisabled?: boolean;
   onPickBackground?: () => void;
+  onFontSize?: () => void;
 }) {
   const mobile = isMobileDevice();
   const closeSide = windowCloseSide();
@@ -81,6 +85,20 @@ export default function ChatChrome({
     <span className="chat-chrome-spacer" />
   );
 
+  const fontToggle = onFontSize ? (
+    <button
+      type="button"
+      className="chat-bg-toggle"
+      aria-label="字体大小"
+      title="字体大小"
+      onClick={() => onFontSize()}
+    >
+      <TypeIcon size={19} strokeWidth={1.75} />
+    </button>
+  ) : (
+    <span className="chat-chrome-spacer" />
+  );
+
   return (
     <header
       className="chat-chrome"
@@ -91,6 +109,7 @@ export default function ChatChrome({
       {closeSide === "start" && !mobile ? close : newSession}
       <div className="chat-chrome-drag" data-tauri-drag-region />
       <div className="chat-chrome-actions">
+        {mobile ? fontToggle : null}
         {mobile ? backgroundToggle : null}
         {closeSide === "start" ? newSession : close}
       </div>

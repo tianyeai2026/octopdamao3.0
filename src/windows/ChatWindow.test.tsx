@@ -56,6 +56,7 @@ vi.mock("../lib/tauriWindowApi", () => ({
 vi.mock("../lib/tauriApi", () => {
   const unlisten = vi.fn();
   return {
+    isMobile: false,
     tauriApi: {
       loadConfig: mocks.loadConfig,
       saveConfig: vi.fn().mockResolvedValue(undefined),

@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 
 import BackgroundPicker from "../components/BackgroundPicker";
 import Composer from "../components/Composer";
 import ChatChrome from "../components/ChatChrome";
 import ChatResizeChrome from "../components/ChatResizeChrome";
+import FontScaleSheet from "../components/FontScaleSheet";
 import MessageList from "../components/MessageList";
 import QueuedMessages from "../components/QueuedMessages";
 import { useChatController } from "../hooks/useChatController";
 import { useEscapeHidesWindow } from "../hooks/useWindowChrome";
-import { BACKGROUND_SRC } from "../lib/configLogic";
+import { BACKGROUND_SRC, fontScaleValue } from "../lib/configLogic";
 import { removeChatItem } from "../lib/messageQueue";
 import SettingsWindow from "./SettingsWindow";
 
@@ -16,6 +17,7 @@ export default function ChatWindow() {
   const chat = useChatController();
   useEscapeHidesWindow();
   const [showBgPicker, setShowBgPicker] = useState(false);
+  const [showFontSheet, setShowFontSheet] = useState(false);
 
   if (chat.needsSettings) {
     return <SettingsWindow onSaved={() => chat.retryInitialize()} />;
@@ -27,6 +29,11 @@ export default function ChatWindow() {
     <main
       className={`chat-window${chat.layoutExpanded ? " is-expanded" : " is-compact"}`}
       ref={chat.rootRef}
+      style={
+        {
+          "--chat-font-scale": fontScaleValue(chat.fontScale),
+        } as CSSProperties
+      }
     >
       {bgSrc ? (
         <div
@@ -38,6 +45,7 @@ export default function ChatWindow() {
       <ChatChrome
         onNewSession={() => void chat.startNewSession()}
         onPickBackground={() => setShowBgPicker(true)}
+        onFontSize={() => setShowFontSheet(true)}
         newSessionDisabled={
           chat.loadingHistory || chat.connection === "streaming"
         }
@@ -106,6 +114,13 @@ export default function ChatWindow() {
           value={chat.chatBackground}
           onChange={(id) => void chat.changeBackground(id)}
           onClose={() => setShowBgPicker(false)}
+        />
+      ) : null}
+      {showFontSheet ? (
+        <FontScaleSheet
+          value={chat.fontScale}
+          onChange={(id) => void chat.changeFontScale(id)}
+          onClose={() => setShowFontSheet(false)}
         />
       ) : null}
     </main>
