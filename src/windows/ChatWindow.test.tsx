@@ -53,19 +53,35 @@ vi.mock("../lib/tauriWindowApi", () => ({
   startCurrentWindowResize: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock("../lib/tauriApi", () => ({
-  tauriApi: {
-    loadConfig: mocks.loadConfig,
-    patchConfig: mocks.patchConfig,
-    getSecret: mocks.getSecret,
-    setSecret: mocks.setSecret,
-    deleteSecret: mocks.deleteSecret,
-    listenAuthUpdated: mocks.listenAuthUpdated,
-    listenChatShown: mocks.listenChatShown,
-    showSettings: mocks.showSettings,
-    placeWindowBottomCenter: mocks.placeWindowBottomCenter,
-  },
-}));
+vi.mock("../lib/tauriApi", () => {
+  const unlisten = vi.fn();
+  return {
+    tauriApi: {
+      loadConfig: mocks.loadConfig,
+      saveConfig: vi.fn().mockResolvedValue(undefined),
+      patchConfig: mocks.patchConfig,
+      getSecret: mocks.getSecret,
+      setSecret: mocks.setSecret,
+      deleteSecret: mocks.deleteSecret,
+      openHome: vi.fn().mockResolvedValue(undefined),
+      showChatNearPet: vi.fn().mockResolvedValue(undefined),
+      hideChat: vi.fn().mockResolvedValue(undefined),
+      hidePet: vi.fn().mockResolvedValue(undefined),
+      showSettings: mocks.showSettings,
+      placeWindowBottomCenter: mocks.placeWindowBottomCenter,
+      placeWindowCentered: vi.fn().mockResolvedValue(undefined),
+      applyBottomAnchoredSize: mocks.applyBottomAnchoredSize,
+      reloadHotkeys: vi.fn().mockResolvedValue(undefined),
+      applyWindowDeactivatePolicy: vi.fn().mockResolvedValue(undefined),
+      emitAuthUpdated: vi.fn().mockResolvedValue(undefined),
+      listenAuthUpdated: mocks.listenAuthUpdated,
+      listenChatShown: mocks.listenChatShown,
+      listenWindowShown: vi.fn().mockResolvedValue(unlisten),
+      emitMascotChanged: vi.fn().mockResolvedValue(undefined),
+      listenMascotChanged: vi.fn().mockResolvedValue(unlisten),
+    },
+  };
+});
 
 vi.mock("../lib/octopHttp", async (importOriginal) => {
   const original = await importOriginal<typeof import("../lib/octopHttp")>();
@@ -188,7 +204,7 @@ describe("ChatWindow", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("region", { name: "暂无消息" }).querySelector("img"),
-    ).toHaveClass("chat-empty-logo");
+    ).toBeNull();
   });
 
   it("没有令牌但有密码时会静默登录后继续初始化", async () => {
@@ -220,14 +236,12 @@ describe("ChatWindow", () => {
     );
   });
 
-  it("缺少访问令牌时提示并打开设置", async () => {
+  it("缺少访问令牌时内联显示设置", async () => {
     mocks.getSecret.mockResolvedValue(null);
 
     render(<ChatWindow />);
 
-    expect(await screen.findByText("需要先完成登录设置")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "打开设置" }));
-    expect(mocks.showSettings).toHaveBeenCalledOnce();
+    expect(await screen.findByText("服务地址")).toBeInTheDocument();
     expect(mocks.listAgents).not.toHaveBeenCalled();
   });
 
@@ -244,7 +258,7 @@ describe("ChatWindow", () => {
 
     render(<ChatWindow />);
 
-    expect(await screen.findByText("需要先完成登录设置")).toBeInTheDocument();
+    expect(await screen.findByText("服务地址")).toBeInTheDocument();
     await waitFor(() => expect(authUpdated).toBeDefined());
     token = "token-after-settings";
     authUpdated?.();
@@ -408,10 +422,9 @@ describe("ChatWindow", () => {
 
     render(<ChatWindow />);
 
-    expect(await screen.findByText("需要先完成登录设置")).toBeInTheDocument();
+    expect(await screen.findByText("服务地址")).toBeInTheDocument();
     expect(mocks.deleteSecret).toHaveBeenCalledWith("access_token");
     expect(mocks.login).toHaveBeenCalledOnce();
-    expect(mocks.showSettings).toHaveBeenCalledOnce();
   });
 
   it("严格模式重复挂载时只采用当前初始化结果", async () => {

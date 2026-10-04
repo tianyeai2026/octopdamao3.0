@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-import logoUrl from "../assets/logo.svg";
 import type { ChatMessage } from "../lib/types";
 import AssistantMarkdown from "./AssistantMarkdown";
 import GeneratingIndicator from "./GeneratingIndicator";
@@ -187,9 +186,7 @@ export default function MessageList({
       <section
         className="message-list message-list-empty"
         aria-label="暂无消息"
-      >
-        <img src={logoUrl} alt="" className="chat-empty-logo" />
-      </section>
+      />
     );
   }
 

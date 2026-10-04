@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "OctopPet",
+  "productName": "全全老师",
   "version": "0.2.0",
   "identifier": "com.octop.pet",
   "build": {
@@ -28,7 +28,7 @@
       },
       {
         "label": "chat",
-        "title": "Octop Chat",
+        "title": "全全老师",
         "width": 400,
         "height": 400,
         "minWidth": 280,

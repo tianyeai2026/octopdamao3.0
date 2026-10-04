@@ -36,7 +36,8 @@ describe("ChatChrome", () => {
     expect(header?.firstElementChild).toBe(
       screen.getByRole("button", { name: "关闭" }),
     );
-    expect(header?.lastElementChild).toBe(
+    const actions = container.querySelector(".chat-chrome-actions");
+    expect(actions).toContainElement(
       screen.getByRole("button", { name: "新建会话" }),
     );
   });
@@ -50,7 +51,8 @@ describe("ChatChrome", () => {
     expect(header?.firstElementChild).toBe(
       screen.getByRole("button", { name: "新建会话" }),
     );
-    expect(header?.lastElementChild).toBe(
+    const actions = container.querySelector(".chat-chrome-actions");
+    expect(actions).toContainElement(
       screen.getByRole("button", { name: "关闭" }),
     );
   });

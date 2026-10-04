@@ -21,10 +21,6 @@
     "core:event:default",
     "opener:default",
     "dialog:default",
-    "global-shortcut:allow-is-registered",
-    "global-shortcut:allow-register",
-    "global-shortcut:allow-unregister",
-    "global-shortcut:allow-unregister-all",
     {
       "identifier": "http:default",
       "allow": [

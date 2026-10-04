@@ -507,7 +507,7 @@ export default function SettingsWindow({
             <div className="settings-rows settings-about">
               <div className="settings-row">
                 <span>应用</span>
-                <span>OctopPet</span>
+                <span>全全老师</span>
               </div>
               <div className="settings-row">
                 <span>版本</span>

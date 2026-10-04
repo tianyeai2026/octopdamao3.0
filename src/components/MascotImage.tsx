@@ -7,7 +7,7 @@ export default function MascotImage({ src }: MascotImageProps) {
     <img
       className="mascot-image"
       src={src}
-      alt="Octop 宠物"
+      alt="全全老师"
       draggable={false}
     />
   );

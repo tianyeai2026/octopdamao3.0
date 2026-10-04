@@ -16,7 +16,8 @@ pub fn run() {
 
     #[cfg(desktop)]
     {
-        builder = builder.plugin(tauri_plugin_global_shortcut::Builder::new());
+        builder =
+            builder.plugin(tauri_plugin_global_shortcut::Builder::new().build());
         builder = builder.on_window_event(|window, event| match event {
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 if window_cmd::should_hide_on_close(window.label()) {
