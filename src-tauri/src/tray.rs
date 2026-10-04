@@ -169,12 +169,12 @@ pub fn reload_hotkeys(app: AppHandle) -> Result<(), String> {
 pub fn setup(app: &mut App) -> tauri::Result<()> {
     let cfg = load_config(app.handle().clone()).unwrap_or_default();
     let menu = build_menu(app.handle(), &cfg)?;
-    // Monochrome template icon so the menu bar matches other system icons.
-    let icon = Image::from_bytes(include_bytes!("../icons/tray-template.png"))?;
+    // 彩色品牌 logo。
+    let icon = Image::from_bytes(include_bytes!("../icons/tray-icon.png"))?;
 
     let tray = TrayIconBuilder::new()
         .icon(icon)
-        .icon_as_template(true)
+        .icon_as_template(false)
         .menu(&menu)
         .on_menu_event(|app, event| {
             if let Err(error) = handle_menu_event(app, event.id().as_ref()) {
