@@ -11,6 +11,7 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   mascotId: "peek",
   chatBackground: "default",
   fontScale: "medium",
+  customBackground: "",
   lastAgentId: null,
   threadIdByAgent: {},
   petX: null,

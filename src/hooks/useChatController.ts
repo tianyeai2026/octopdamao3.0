@@ -96,6 +96,7 @@ export function useChatController() {
   const [error, setError] = useState("");
   const [chatBackground, setChatBackground] = useState<BackgroundId>("default");
   const [fontScale, setFontScale] = useState<FontScale>("medium");
+  const [customBackground, setCustomBackground] = useState("");
   const rootRef = useRef<HTMLElement | null>(null);
   const wasExpandedRef = useRef(false);
   const lastCompactHeightRef = useRef(0);
@@ -362,6 +363,7 @@ export function useChatController() {
       configRef.current = config;
       setChatBackground(config.chatBackground || "default");
       setFontScale(config.fontScale || "medium");
+      setCustomBackground(config.customBackground || "");
 
       let token = storedToken;
       if (!token) {
@@ -867,12 +869,34 @@ export function useChatController() {
     }
   }
 
+  async function changeCustomBackground(dataUrl: string) {
+    setCustomBackground(dataUrl);
+    setChatBackground("custom");
+    const current = configRef.current;
+    if (!current) return;
+    configRef.current = {
+      ...current,
+      chatBackground: "custom",
+      customBackground: dataUrl,
+    };
+    try {
+      await tauriApi.patchConfig({
+        chatBackground: "custom",
+        customBackground: dataUrl,
+      });
+    } catch {
+      // 背景已在本地即时生效；持久化失败不打断使用
+    }
+  }
+
   return {
     rootRef,
     chatBackground,
     fontScale,
+    customBackground,
     changeBackground,
     changeFontScale,
+    changeCustomBackground,
     needsSettings,
     expanded,
     layoutExpanded,

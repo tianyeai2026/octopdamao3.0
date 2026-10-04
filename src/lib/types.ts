@@ -1,6 +1,12 @@
 export type MascotId = "peek" | "type";
 
-export type BackgroundId = "default" | "sky" | "soda" | "doll" | "mint";
+export type BackgroundId =
+  | "default"
+  | "sky"
+  | "soda"
+  | "doll"
+  | "mint"
+  | "custom";
 
 export type FontScale = "small" | "medium" | "large" | "xlarge";
 
@@ -10,6 +16,8 @@ export interface AppConfig {
   mascotId: MascotId;
   chatBackground: BackgroundId;
   fontScale: FontScale;
+  /** 用户自定义背景图的 data URL；chatBackground 为 custom 时使用。 */
+  customBackground: string;
   lastAgentId: string | null;
   threadIdByAgent: Record<string, string>;
   petX: number | null;

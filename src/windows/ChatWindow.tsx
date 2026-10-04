@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 
 import BackgroundPicker from "../components/BackgroundPicker";
 import Composer from "../components/Composer";
@@ -10,6 +10,7 @@ import QueuedMessages from "../components/QueuedMessages";
 import { useChatController } from "../hooks/useChatController";
 import { useEscapeHidesWindow } from "../hooks/useWindowChrome";
 import { BACKGROUND_SRC, fontScaleValue } from "../lib/configLogic";
+import { fileToBackgroundDataUrl } from "../lib/backgroundImage";
 import { removeChatItem } from "../lib/messageQueue";
 import SettingsWindow from "./SettingsWindow";
 
@@ -18,12 +19,22 @@ export default function ChatWindow() {
   useEscapeHidesWindow();
   const [showBgPicker, setShowBgPicker] = useState(false);
   const [showFontSheet, setShowFontSheet] = useState(false);
+  const bgFileRef = useRef<HTMLInputElement>(null);
+
+  async function pickCustomBackground(file: File) {
+    const dataUrl = await fileToBackgroundDataUrl(file);
+    setShowBgPicker(false);
+    await chat.changeCustomBackground(dataUrl);
+  }
 
   if (chat.needsSettings) {
     return <SettingsWindow onSaved={() => chat.retryInitialize()} />;
   }
 
-  const bgSrc = BACKGROUND_SRC[chat.chatBackground];
+  const bgSrc =
+    chat.chatBackground === "custom"
+      ? chat.customBackground
+      : BACKGROUND_SRC[chat.chatBackground];
 
   return (
     <main
@@ -113,6 +124,7 @@ export default function ChatWindow() {
           variant="sheet"
           value={chat.chatBackground}
           onChange={(id) => void chat.changeBackground(id)}
+          onPickCustom={() => bgFileRef.current?.click()}
           onClose={() => setShowBgPicker(false)}
         />
       ) : null}
@@ -123,6 +135,18 @@ export default function ChatWindow() {
           onClose={() => setShowFontSheet(false)}
         />
       ) : null}
+      <input
+        ref={bgFileRef}
+        type="file"
+        accept="image/*"
+        aria-label="选择自定义背景"
+        hidden
+        onChange={(event) => {
+          const file = event.currentTarget.files?.[0];
+          if (file) void pickCustomBackground(file);
+          event.currentTarget.value = "";
+        }}
+      />
     </main>
   );
 }

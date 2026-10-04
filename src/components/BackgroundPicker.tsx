@@ -1,3 +1,5 @@
+import { ImagePlus } from "lucide-react";
+
 import { BACKGROUND_OPTIONS } from "../lib/configLogic";
 import type { BackgroundId } from "../lib/types";
 
@@ -5,11 +7,13 @@ export default function BackgroundPicker({
   value,
   onChange,
   onClose,
+  onPickCustom,
   variant = "inline",
 }: {
   value: BackgroundId;
   onChange: (id: BackgroundId) => void;
   onClose?: () => void;
+  onPickCustom?: () => void;
   variant?: "sheet" | "inline";
 }) {
   const grid = (
@@ -40,6 +44,19 @@ export default function BackgroundPicker({
           </button>
         );
       })}
+      {onPickCustom ? (
+        <button
+          type="button"
+          className={`bg-option bg-option-custom${value === "custom" ? " is-selected" : ""}`}
+          aria-pressed={value === "custom"}
+          onClick={() => onPickCustom()}
+        >
+          <span className="bg-option-thumb bg-option-thumb-custom">
+            <ImagePlus size={20} strokeWidth={1.75} />
+          </span>
+          <span className="bg-option-label">自定义</span>
+        </button>
+      ) : null}
     </div>
   );
 

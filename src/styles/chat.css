@@ -1061,6 +1061,19 @@ html[data-mobile="true"] .chat-chrome {
   background: linear-gradient(145deg, #2a2a2e, #141416);
 }
 
+.bg-option-thumb-custom {
+  display: grid;
+  place-items: center;
+  border: 2px dashed #48484a;
+  color: #8e8e93;
+}
+
+.bg-option-custom.is-selected .bg-option-thumb-custom {
+  border-style: solid;
+  border-color: #0a84ff;
+  color: #0a84ff;
+}
+
 .bg-option.is-selected .bg-option-thumb {
   border-color: #0a84ff;
 }
