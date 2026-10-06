@@ -82,9 +82,7 @@ async function clientFetch(
   init?: RequestInit,
 ): Promise<Response> {
   try {
-    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (
-      !mobile &&
       typeof window !== "undefined" &&
       "__TAURI_INTERNALS__" in window
     ) {

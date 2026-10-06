@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings content area scrolls when the panel is taller than the monitor; the footer buttons stay pinned (sticky) so they remain reachable
 - Auto-fit clamps the window to the current monitor work area and re-centers after resizing
 - Inline chat-background thumbnails are smaller so the settings panel needs less vertical space
+- Android: the mobile app can now connect to the server — requests use the Tauri native HTTP plugin and the mobile capability grants `fetch` for http/https URLs, fixing the “无法连接” / “not allowed by ACL” errors
 
 ## [0.2.0] - 2026-09-03
 
