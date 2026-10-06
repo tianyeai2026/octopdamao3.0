@@ -18,6 +18,8 @@ html[data-window-label="settings"] #root {
   flex-direction: column;
   width: 100%;
   height: auto;
+  /* Never grow taller than the viewport; the frame scrolls instead. */
+  max-height: 100vh;
   padding: 10px 12px 12px;
   overflow: hidden;
   background: #2c2c2e;
@@ -76,13 +78,29 @@ html[data-window-label="settings"] #root {
 
 .settings-frame {
   display: flex;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   flex-direction: column;
+  min-height: 0;
   padding: 14px 16px 12px;
-  overflow: visible;
+  overflow-y: auto;
   border: 1px solid #48484a;
   border-radius: 8px;
   background: #2c2c2e;
+}
+
+/* Slim dark scrollbars (WebView2 / WebKit). */
+.settings-frame::-webkit-scrollbar {
+  width: 8px;
+}
+
+.settings-frame::-webkit-scrollbar-thumb {
+  border: 2px solid #2c2c2e;
+  border-radius: 8px;
+  background: #555;
+}
+
+.settings-frame::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .settings-panel {
@@ -231,12 +249,18 @@ html[data-window-label="settings"] #root {
 }
 
 .settings-footer {
+  position: sticky;
+  bottom: -12px;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 4px;
-  padding-top: 4px;
+  /* Span the frame width/padding so it reads as a bottom action bar. */
+  margin: 4px -16px 0;
+  padding: 8px 16px 12px;
+  background: #2c2c2e;
+  border-radius: 0 0 8px 8px;
 }
 
 .settings-footer-actions {
@@ -299,6 +323,12 @@ html[data-window-label="settings"] #root {
 .shortcut-recorder:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+/* Settings inline picker: compact previews (the chat sheet keeps 9:16). */
+.bg-picker-inline .bg-option-thumb {
+  aspect-ratio: auto;
+  height: 96px;
 }
 
 /* ---------- Mobile (Android) full-screen settings ---------- */

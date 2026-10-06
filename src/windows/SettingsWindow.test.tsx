@@ -50,6 +50,8 @@ vi.mock("../lib/tauriApi", () => ({
 vi.mock("../lib/tauriWindowApi", () => ({
   hideCurrentWindow: mocks.hideCurrentWindow.mockResolvedValue(undefined),
   setCurrentWindowSize: vi.fn().mockResolvedValue(undefined),
+  getCurrentMonitorWorkArea: vi.fn().mockResolvedValue(null),
+  getWindowLabel: vi.fn(() => "settings"),
 }));
 
 vi.mock("../lib/octopHttp", () => ({

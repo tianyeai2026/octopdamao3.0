@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Windows: settings window now fits the screen on 1080p and smaller displays — the “测试连接” and “保存” buttons are no longer cut off below the screen edge
+- Settings content area scrolls when the panel is taller than the monitor; the footer buttons stay pinned (sticky) so they remain reachable
+- Auto-fit clamps the window to the current monitor work area and re-centers after resizing
+- Inline chat-background thumbnails are smaller so the settings panel needs less vertical space
+
 ## [0.2.0] - 2026-09-03
 
 ### Fixed

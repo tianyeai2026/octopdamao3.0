@@ -1,6 +1,7 @@
 import {
   LogicalSize,
   PhysicalPosition,
+  currentMonitor,
   getCurrentWindow,
 } from "@tauri-apps/api/window";
 
@@ -10,6 +11,19 @@ export type ResizeEdge = "South" | "East" | "SouthEast";
 
 export function getWindowLabel(): string {
   return getCurrentWindow().label;
+}
+
+/** Height (logical pixels) of the monitor containing the cursor, or null. */
+export async function getCurrentMonitorWorkArea(): Promise<{
+  height: number;
+} | null> {
+  try {
+    const monitor = await currentMonitor();
+    if (!monitor) return null;
+    return { height: monitor.workArea.size.height / monitor.scaleFactor };
+  } catch {
+    return null;
+  }
 }
 
 export async function hideCurrentWindow(): Promise<void> {
